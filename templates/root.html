@@ -1,0 +1,186 @@
+<!-- templates/crypto_tools.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crypto Tools</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0; padding: 24px;
+      max-width: 960px; margin-inline: auto;
+      line-height: 1.4;
+    }
+    header { margin-bottom: 18px; }
+    h1 { font-size: 1.4rem; margin: 0 0 6px; }
+    p { margin: 0; opacity: 0.8; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .card {
+      border: 1px solid rgba(127,127,127,0.35);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(127,127,127,0.06);
+    }
+    .card h2 { font-size: 1.05rem; margin: 0 0 10px; }
+    label { display: block; font-size: 0.9rem; margin: 8px 0 4px; opacity: 0.9; }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(127,127,127,0.35);
+      background: transparent;
+      outline: none;
+    }
+    input[type="text"]:focus, input[type="number"]:focus {
+      border-color: rgba(127,127,127,0.7);
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    button {
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(127,127,127,0.35);
+      background: rgba(127,127,127,0.12);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { background: rgba(127,127,127,0.18); }
+    .result {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px dashed rgba(127,127,127,0.45);
+      background: rgba(127,127,127,0.08);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .muted { opacity: 0.75; font-size: 0.9rem; }
+    footer { margin-top: 18px; opacity: 0.7; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Crypto Function Sandbox</h1>
+    <p class="muted">One-page forms for basic number theory utilities (Flask backend).</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- GCD -->
+    <section class="card">
+      <h2>gcd(a, b)</h2>
+      <form method="post" action="{{ url_for('gcd_route') }}">
+        <div class="row">
+          <div>
+            <label for="gcd_a">a</label>
+            <input id="gcd_a" name="a" type="text" inputmode="numeric" placeholder="e.g. 240" required>
+          </div>
+          <div>
+            <label for="gcd_b">b</label>
+            <input id="gcd_b" name="b" type="text" inputmode="numeric" placeholder="e.g. 46" required>
+          </div>
+        </div>
+        <button type="submit">Compute</button>
+      </form>
+      {% if results and results.kind == 'gcd' %}
+        <div class="result">{{ results.text }}</div>
+      {% endif %}
+    </section>
+
+    <!-- Extended Euclid -->
+    <section class="card">
+      <h2>extended_euclid(a, b)</h2>
+      <form method="post" action="{{ url_for('ext_euclid_route') }}">
+        <div class="row">
+          <div>
+            <label for="ee_a">a</label>
+            <input id="ee_a" name="a" type="text" inputmode="numeric" placeholder="e.g. 240" required>
+          </div>
+          <div>
+            <label for="ee_b">b</label>
+            <input id="ee_b" name="b" type="text" inputmode="numeric" placeholder="e.g. 46" required>
+          </div>
+        </div>
+        <button type="submit">Compute</button>
+      </form>
+      {% if results and results.kind == 'ext_euclid' %}
+        <div class="result">{{ results.text }}</div>
+      {% endif %}
+    </section>
+
+    <!-- a mod p -->
+    <section class="card">
+      <h2>a_mod_p(a, p) = a % p</h2>
+      <form method="post" action="{{ url_for('amodp_route') }}">
+        <div class="row">
+          <div>
+            <label for="am_a">a</label>
+            <input id="am_a" name="a" type="text" inputmode="numeric" placeholder="e.g. -17" required>
+          </div>
+          <div>
+            <label for="am_p">p</label>
+            <input id="am_p" name="p" type="text" inputmode="numeric" placeholder="e.g. 11" required>
+          </div>
+        </div>
+        <button type="submit">Compute</button>
+      </form>
+      {% if results and results.kind == 'amodp' %}
+        <div class="result">{{ results.text }}</div>
+      {% endif %}
+    </section>
+
+    <!-- Mod inverse -->
+    <section class="card">
+      <h2>modinv(a, p)</h2>
+      <p class="muted">Find a⁻¹ mod p (requires gcd(a, p)=1).</p>
+      <form method="post" action="{{ url_for('modinv_route') }}">
+        <div class="row">
+          <div>
+            <label for="mi_a">a</label>
+            <input id="mi_a" name="a" type="text" inputmode="numeric" placeholder="e.g. 3" required>
+          </div>
+          <div>
+            <label for="mi_p">p</label>
+            <input id="mi_p" name="p" type="text" inputmode="numeric" placeholder="e.g. 11" required>
+          </div>
+        </div>
+        <button type="submit">Compute</button>
+      </form>
+      {% if results and results.kind == 'modinv' %}
+        <div class="result">{{ results.text }}</div>
+      {% endif %}
+    </section>
+
+    <!-- Fast powering -->
+    <section class="card">
+      <h2>fast_powering(g, x, p)</h2>
+      <p class="muted">Compute g^x mod p.</p>
+      <form method="post" action="{{ url_for('fastpow_route') }}">
+        <label for="fp_g">g</label>
+        <input id="fp_g" name="g" type="text" inputmode="numeric" placeholder="e.g. 7" required>
+
+        <label for="fp_x">x (exponent)</label>
+        <input id="fp_x" name="x" type="text" inputmode="numeric" placeholder="e.g. 560" required>
+
+        <label for="fp_p">p (modulus)</label>
+        <input id="fp_p" name="p" type="text" inputmode="numeric" placeholder="e.g. 561" required>
+
+        <button type="submit">Compute</button>
+      </form>
+      {% if results and results.kind == 'fastpow' %}
+        <div class="result">{{ results.text }}</div>
+      {% endif %}
+    </section>
+
+  </div>
+</body>
+</html>
