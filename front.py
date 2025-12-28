@@ -56,7 +56,7 @@ def amodp_route() -> str:
 def modinv_route() -> str:
     a, p = int(request.form.get("a")), int(request.form.get("p"))
     if a and p:
-        result = utilities.get_mod_inverse_fermat(a,p)
+        result = utilities.get_mod_inverse_euclid(a,p)  # Fermat will work only with prime modulus
         text = f"inverse of {a} is {result} mod {p} "
         response_data = {'kind': 'modinv', 'text': text}
         return render_template("root.html", results=response_data)
