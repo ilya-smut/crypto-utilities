@@ -1,0 +1,119 @@
+:root { color-scheme: light dark; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0; padding: 24px;
+      max-width: 960px; margin-inline: auto;
+      line-height: 1.4;
+    }
+    header { margin-bottom: 18px; }
+    h1 { font-size: 1.4rem; margin: 0 0 6px; }
+    p { margin: 0; opacity: 0.8; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .card {
+      border: 1px solid rgba(127,127,127,0.35);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(127,127,127,0.06);
+    }
+    .card h2 { font-size: 1.05rem; margin: 0 0 10px; }
+    label { display: block; font-size: 0.9rem; margin: 8px 0 4px; opacity: 0.9; }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(127,127,127,0.35);
+      background: transparent;
+      outline: none;
+    }
+    input[type="text"]:focus, input[type="number"]:focus {
+      border-color: rgba(127,127,127,0.7);
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    button {
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(127,127,127,0.35);
+      background: rgba(127,127,127,0.12);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { background: rgba(127,127,127,0.18); }
+    .result {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px dashed rgba(127,127,127,0.45);
+      background: rgba(127,127,127,0.08);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .muted { opacity: 0.75; font-size: 0.9rem; }
+    footer { margin-top: 18px; opacity: 0.7; font-size: 0.9rem; }
+
+
+    /* Saved Values list */
+.saved-list {
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.saved-item {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(127,127,127,0.28);
+  background: rgba(127,127,127,0.06);
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.saved-meta dt {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.saved-meta dd {
+  margin: 2px 0 0;
+  opacity: 0.85;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  word-break: break-word;
+}
+
+.saved-actions {
+  margin: 0;
+}
+
+.saved-actions button {
+  margin: 0;              /* override global button margin-top */
+  padding: 8px 12px;
+}
+
+/* optional: make delete feel like delete, but still fits your theme */
+button.danger:hover {
+  border-color: rgba(255, 80, 80, 0.55);
+}
+
+/* Saved Values: keep the card size stable */
+.saved-scroll {
+  margin-top: 12px;
+  max-height: 260px;          /* tweak: 200–360 feels good */
+  overflow: auto;
+  padding-right: 6px;         /* stops scrollbar overlapping content */
+}
+
+/* optional: subtle scrollbar behavior */
+.saved-scroll {
+  scrollbar-gutter: stable;
+}

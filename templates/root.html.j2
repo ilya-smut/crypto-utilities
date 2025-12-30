@@ -1,0 +1,183 @@
+<!-- templates/crypto_tools.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crypto Tools</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Crypto Function Sandbox</h1>
+    <a href="{{ url_for('root') }}" class="home-button">Home</a>
+    <p class="muted">One-page forms for basic number theory utilities (Flask backend).</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- Combo Operation -->
+    <section class="card">
+      <h2>Combo Operation</h2>
+
+      <form id="comboForm" method="post">
+        <label for="comboOp">operation</label>
+        <select id="comboOp" name="combo_op" required data-selected="{{ response.combo_op or 'gcd' }}">
+          <option value="gcd">gcd(a, b)</option>
+          <option value="ext_euclid">extended euclid (a, b)</option>
+          <option value="amodp">a mod p</option>
+          <option value="modinv">mod inverse (a, p)</option>
+          <option value="fastpow">fast powering (g^x mod p)</option>
+        </select>
+
+        <div id="comboFieldA">
+          <label for="comboA">a</label>
+          <input id="comboA" name="a" type="text" inputmode="numeric" placeholder="e.g. 56">
+        </div>
+
+        <div id="comboFieldB">
+          <label for="comboB">b</label>
+          <input id="comboB" name="b" type="text" inputmode="numeric" placeholder="e.g. 98">
+        </div>
+
+        <div id="comboFieldG">
+          <label for="comboG">g</label>
+          <input id="comboG" name="g" type="text" inputmode="numeric" placeholder="e.g. 7">
+        </div>
+
+        <div id="comboFieldX">
+          <label for="comboX">x</label>
+          <input id="comboX" name="x" type="text" inputmode="numeric" placeholder="e.g. 128">
+        </div>
+
+        <div id="comboFieldP">
+          <label for="comboP">p</label>
+          <input id="comboP" name="p" type="text" inputmode="numeric" placeholder="e.g. 101">
+        </div>
+
+        <button type="submit">Compute</button>
+      </form>
+
+      {% if response.results and response.results.kind == 'combo' %}
+        <div class="result">{{ response.results.text }}</div>
+      {% endif %}
+    </section>
+
+    <!-- Saved Values -->
+    <section class="card">
+      <h2>Saved Values</h2>
+
+      <form method="post" action="{{ url_for('save_value') }}">
+        <label for="name">name</label>
+        <input id="name" name="name" type="text" inputmode="text" placeholder="modulus1" required>
+
+        <label for="value">value</label>
+        <input id="value" name="value" type="text" inputmode="numeric" placeholder="e.g. 560" required>
+
+        <button type="submit">Save</button>
+      </form>
+
+      {% if response.saved_values %}
+        <div class="saved-scroll">
+          <dl class="saved-list">
+            {% for name, value in response.saved_values.items() %}
+              <div class="saved-item">
+                <div class="saved-meta">
+                  <dt>{{ name }}</dt>
+                  <dd>{{ value }}</dd>
+                </div>
+
+                <form method="post" action="{{ url_for('delete_value') }}" class="saved-actions">
+                  <input type="hidden" name="name" value="{{ name }}">
+                  <button type="submit" class="danger">Delete</button>
+                </form>
+              </div>
+            {% endfor %}
+          </dl>
+        </div>
+      {% endif %}
+    </section>
+
+  </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById("comboForm");
+      const op = document.getElementById("comboOp");
+
+      const fieldA = document.getElementById("comboFieldA");
+      const fieldB = document.getElementById("comboFieldB");
+      const fieldG = document.getElementById("comboFieldG");
+      const fieldX = document.getElementById("comboFieldX");
+      const fieldP = document.getElementById("comboFieldP");
+
+      const a = document.getElementById("comboA");
+      const b = document.getElementById("comboB");
+      const g = document.getElementById("comboG");
+      const x = document.getElementById("comboX");
+      const p = document.getElementById("comboP");
+
+      const routes = {
+        gcd: "{{ url_for('gcd_route') }}",
+        ext_euclid: "{{ url_for('ext_euclid_route') }}",
+        amodp: "{{ url_for('amodp_route') }}",
+        modinv: "{{ url_for('modinv_route') }}",
+        fastpow: "{{ url_for('fastpow_route') }}"
+      };
+
+      function show(el, yes) {
+        el.style.display = yes ? "" : "none";
+      }
+
+      function setRequired(input, yes) {
+        input.required = !!yes;
+        if (!yes) input.value = "";
+      }
+
+      function updateUI() {
+        const v = op.value;
+
+        show(fieldA, false); show(fieldB, false); show(fieldG, false);
+        show(fieldX, false); show(fieldP, false);
+
+        setRequired(a, false); setRequired(b, false); setRequired(g, false);
+        setRequired(x, false); setRequired(p, false);
+
+        if (v === "gcd" || v === "ext_euclid") {
+          show(fieldA, true); show(fieldB, true);
+          setRequired(a, true); setRequired(b, true);
+          a.placeholder = "e.g. 56";
+          b.placeholder = "e.g. 98";
+        }
+
+        if (v === "amodp" || v === "modinv") {
+          show(fieldA, true); show(fieldP, true);
+          setRequired(a, true); setRequired(p, true);
+          a.placeholder = "a (e.g. 560)";
+          p.placeholder = "p (e.g. 97)";
+        }
+
+        if (v === "fastpow") {
+          show(fieldG, true); show(fieldX, true); show(fieldP, true);
+          setRequired(g, true); setRequired(x, true); setRequired(p, true);
+          g.placeholder = "g (e.g. 7)";
+          x.placeholder = "x (e.g. 128)";
+          p.placeholder = "p (e.g. 101)";
+        }
+      }
+
+      // ✅ restore selected op from server-provided data-selected BEFORE updateUI()
+      const selectedFromServer = op.dataset.selected;
+      if (selectedFromServer) op.value = selectedFromServer;
+
+      op.addEventListener("change", updateUI);
+      updateUI();
+
+      form.addEventListener("submit", function () {
+        const v = op.value; // use the current (user-selected) op
+        form.action = routes[v] || "{{ url_for('root') }}";
+      });
+    })();
+  </script>
+</body>
+</html>
